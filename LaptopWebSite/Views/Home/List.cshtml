@@ -1,0 +1,37 @@
+﻿@model LaptopWebSite.ViewModels.HomeViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        @Html.Partial("_Filter", Model.Filters)
+    </div>
+    <div class="col-md-8">
+        <h2>Products</h2>
+        @if (Model.Products != null)
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Count</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+                            <td>@product.Id</td>
+                            <td>@product.Name</td>
+                            <td>@product.Count</td>
+                            <td>@product.Price</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

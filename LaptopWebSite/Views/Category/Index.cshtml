@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<input type="text" name="txtCategoryName" id="txtCategoryName" value=""  />
+
+<a href="#" id="btnAddNode" class="btn btn-danger">Add</a>
+
+
+<div id="tree"></div>
+
+@section styles {
+
+    <link href="~/Content/themes/default/style.css" rel="stylesheet" />
+}
+
+@section scripts {
+    <script src="~/Scripts/jstree.js"></script>
+    <script>
+        //$(function () {
+        //    $('#container').jstree();
+        //});
+        $(function () {
+            var parentId = null;
+            $('#tree').jstree({
+                'core': {
+                    'multiple': false,
+                    'data': {
+                        'url': function (node) {
+                            return node.id === '#' ?
+                                '/Category/GetParentCategories' :
+                                '/Category/GetChildrenCategories';
+                        },
+                        'data': function (node) {
+                            return { 'id': node.id };
+                        }
+                    },
+                    'check_callback': true
+                }
+            });
+            //$('#tree').on('create_node.jstree', function (e, data) {
+            //    console.log(data.node.parent);
+                
+            //});
+            $('#tree').on("changed.jstree", function (e, data) {
+                parentId = data.selected[0];
+                //console.log(data);
+                console.log(parentId);
+            });
+            
+            $("#btnAddNode").on("click", function () {
+                //alert();
+                var text = $("#txtCategoryName").val();
+                $.get('/Category/CreateCategory',
+                    {
+                        'name': text,
+                        'parentId': parentId
+                    })
+                    .done(function (d) {
+                        var id = d;
+                        var parent = '#';
+                        if (parentId)
+                            parent = parentId;
+                        $('#tree').jstree()
+                            .create_node(parent, { "id": id, "text": text },
+                            "last", function () {
+                                alert("done");
+                                //return false;
+                            });
+                        //data.instance.set_id(data.node, d.id);
+                    })
+                    .fail(function () {
+                        data.instance.refresh();
+                    });
+                
+                return false;
+            });
+            
+
+        });
+    </script>
+}

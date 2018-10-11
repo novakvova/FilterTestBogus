@@ -1,0 +1,19 @@
+﻿@model List<LaptopWebSite.ViewModels.FNameViewModel>
+<h2>Filters</h2>
+@using (Html.BeginForm("Filter", "Home", FormMethod.Get))
+{
+    foreach (var name in Model)
+    {
+        <ul>
+            @name.Name
+            @foreach (var value in name.Children)
+            {
+                <li>
+                    <input type="checkbox" value="@value.Id" id="fvalues" name="fvalues" />
+                    @value.Name
+                </li>
+            }
+        </ul>
+    }
+    <button type="submit">Применить фильтры</button>
+}
